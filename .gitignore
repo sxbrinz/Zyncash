@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+girodiario.db
+.streamlit/secrets.toml
+venv/
