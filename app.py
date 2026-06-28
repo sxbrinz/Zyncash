@@ -9,9 +9,8 @@ Como rodar:
 Fluxo do app:
 1. Tela de login (campo de e-mail/senha em destaque; "Criar conta" como ação secundária)
 2. Formulário para registrar entradas e saídas do dia, com campo de valor com máscara monetária
-3. Tabela de lançamentos com indicador colorido (bolinha) por tipo, e opção de editar/excluir
-4. Menu de opções (⋮) no canto superior direito com: resumo filtrado, gráficos filtrados,
-   download de PDF (tabela e gráficos separados) e caixa de sugestões
+3. Tabela de lançamentos com indicador colorido por tipo, e opção de editar/excluir
+4. Menu de opções (⋮) 
 """
 
 import streamlit as st
@@ -25,7 +24,7 @@ import analise
 import relatorio_pdf
 
 # ---------- Configuração inicial da página ----------
-st.set_page_config(page_title="Zyncash", page_icon="💰", layout="wide")
+st.set_page_config(page_title="Zyncash", layout="wide")
 
 # Garante que as tabelas do banco existem (só cria na primeira vez)
 db.criar_tabelas()
@@ -36,10 +35,7 @@ CATEGORIAS_SUGERIDAS = [
     "Aluguel/Moradia", "Transporte", "Lazer", "Outros",
 ]
 
-
-# ======================================================================
-# Funções auxiliares gerais
-# ======================================================================
+# FUNÇÕES 
 
 def usuario_logado() -> bool:
     return st.session_state.get("usuario_id") is not None
@@ -68,9 +64,7 @@ def senha_valida(senha: str) -> bool:
     return len(senha) >= SENHA_MINIMO_CARACTERES
 
 
-# ======================================================================
-# Tela de login / cadastro
-# ======================================================================
+# TELA DE LOGIN 
 
 def tela_login():
     st.title("Zyncash")
@@ -131,14 +125,7 @@ def tela_login():
                 st.session_state["mostrar_cadastro"] = False
                 st.rerun()
 
-
-# ======================================================================
-# Campo de valor com máscara monetária (estilo caixa eletrônico)
-# ======================================================================
-
-# ======================================================================
-# Campo de valor com máscara monetária (estilo caixa eletrônico)
-# ======================================================================
+# CAMPO DE VALOR
 
 def _formatar_campo_valor(key_atual: str):
     """
