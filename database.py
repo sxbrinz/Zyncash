@@ -3,14 +3,15 @@ database.py
 ------------
 Responsável por toda a comunicação com o banco de dados SQLite.
 Aqui ficam: criação das tabelas, cadastro de usuário, login,
-e as operações de inserir/listar/excluir lançamentos financeiros.
+operações de inserir/listar/editar/excluir lançamentos financeiros,
+e o registro de sugestões enviadas pelos usuários.
 """
 
 import sqlite3
 import hashlib
 from datetime import datetime
 
-DB_NAME = "girodiario.db"
+DB_NAME = "zyncash.db"
 
 
 def conectar():
@@ -48,6 +49,17 @@ def criar_tabelas():
         )
     """)
 
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS sugestoes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            usuario_id INTEGER,
+            usuario_nome TEXT,
+            mensagem TEXT NOT NULL,
+            criado_em TEXT NOT NULL,
+            FOREIGN KEY (usuario_id) REFERENCES usuarios (id)
+        )
+    """)
+
     conn.commit()
     conn.close()
 
@@ -58,10 +70,7 @@ def hash_senha(senha: str) -> str:
 
 
 def criar_usuario(nome: str, email: str, senha: str) -> tuple[bool, str]:
-    """
-    Cadastra um novo usuário.
-    Retorna (sucesso, mensagem).
-    """
+    """Cadastra um novo usuário. Retorna (sucesso, mensagem)."""
     conn = conectar()
     cursor = conn.cursor()
     try:
@@ -78,10 +87,7 @@ def criar_usuario(nome: str, email: str, senha: str) -> tuple[bool, str]:
 
 
 def autenticar_usuario(email: str, senha: str):
-    """
-    Verifica se email/senha correspondem a um usuário cadastrado.
-    Retorna o registro do usuário (sqlite3.Row) ou None se inválido.
-    """
+    """Verifica se email/senha correspondem a um usuário cadastrado."""
     conn = conectar()
     cursor = conn.cursor()
     cursor.execute(
@@ -106,6 +112,21 @@ def inserir_lancamento(usuario_id: int, data: str, descricao: str, categoria: st
     conn.close()
 
 
+def atualizar_lancamento(lancamento_id: int, usuario_id: int, data: str, descricao: str,
+                          categoria: str, tipo: str, valor: float):
+    """Atualiza um lançamento já existente, garantindo que pertence ao usuário."""
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute(
+        """UPDATE lancamentos
+           SET data = ?, descricao = ?, categoria = ?, tipo = ?, valor = ?
+           WHERE id = ? AND usuario_id = ?""",
+        (data, descricao, categoria, tipo, abs(valor), lancamento_id, usuario_id),
+    )
+    conn.commit()
+    conn.close()
+
+
 def listar_lancamentos(usuario_id: int):
     """Retorna todos os lançamentos de um usuário, do mais recente para o mais antigo."""
     conn = conectar()
@@ -115,6 +136,19 @@ def listar_lancamentos(usuario_id: int):
         (usuario_id,),
     )
     resultado = cursor.fetchall()
+    conn.close()
+    return resultado
+
+
+def buscar_lancamento(lancamento_id: int, usuario_id: int):
+    """Busca um único lançamento pelo id, garantindo que pertence ao usuário."""
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute(
+        "SELECT * FROM lancamentos WHERE id = ? AND usuario_id = ?",
+        (lancamento_id, usuario_id),
+    )
+    resultado = cursor.fetchone()
     conn.close()
     return resultado
 
@@ -129,3 +163,26 @@ def excluir_lancamento(lancamento_id: int, usuario_id: int):
     )
     conn.commit()
     conn.close()
+
+
+def salvar_sugestao(usuario_id: int, usuario_nome: str, mensagem: str):
+    """Salva uma sugestão enviada por um usuário, para consulta posterior pela administradora."""
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute(
+        """INSERT INTO sugestoes (usuario_id, usuario_nome, mensagem, criado_em)
+           VALUES (?, ?, ?, ?)""",
+        (usuario_id, usuario_nome, mensagem, datetime.now().isoformat()),
+    )
+    conn.commit()
+    conn.close()
+
+
+def listar_sugestoes():
+    """Retorna todas as sugestões recebidas, da mais recente para a mais antiga."""
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM sugestoes ORDER BY criado_em DESC")
+    resultado = cursor.fetchall()
+    conn.close()
+    return resultado

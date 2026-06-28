@@ -3,3 +3,4 @@ __pycache__/
 girodiario.db
 .streamlit/secrets.toml
 venv/
+zyncash.db

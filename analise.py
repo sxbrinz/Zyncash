@@ -1,6 +1,6 @@
 """
-analise.py 
------- 
+analise.py
+-----------
 Funções de análise de dados sobre os lançamentos financeiros.
 Recebe os dados do banco (via pandas) e calcula totais, agrupamentos
 por período (dia/semana/mês) e estatísticas por categoria.
@@ -26,6 +26,28 @@ def lancamentos_para_dataframe(lancamentos) -> pd.DataFrame:
         axis=1,
     )
     return df
+
+
+def filtrar_por_periodo(df: pd.DataFrame, periodo: str) -> pd.DataFrame:
+    """
+    Filtra o DataFrame considerando apenas o período mais recente solicitado.
+    periodo pode ser: 'dia', 'semana', 'mes' ou 'todos'.
+    """
+    if df.empty or periodo == "todos":
+        return df
+
+    agora = pd.Timestamp.now().normalize()
+
+    if periodo == "dia":
+        limite = agora
+    elif periodo == "semana":
+        limite = agora - pd.Timedelta(days=7)
+    elif periodo == "mes":
+        limite = agora - pd.Timedelta(days=30)
+    else:
+        return df
+
+    return df[df["data"] >= limite]
 
 
 def resumo_geral(df: pd.DataFrame) -> dict:
@@ -79,12 +101,3 @@ def gastos_por_categoria(df: pd.DataFrame) -> pd.DataFrame:
     agrupado = saidas.groupby("categoria")["valor"].sum().reset_index()
     agrupado.columns = ["categoria", "total"]
     return agrupado.sort_values("total", ascending=False)
-
-
-def dia_mais_lucrativo(df: pd.DataFrame):
-    """Retorna a data e o saldo do dia com maior lucro líquido."""
-    por_dia = resumo_por_dia(df)
-    if por_dia.empty:
-        return None, 0.0
-    linha = por_dia.loc[por_dia["saldo"].idxmax()]
-    return linha["data"], round(linha["saldo"], 2)
