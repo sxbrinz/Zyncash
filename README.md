@@ -53,4 +53,5 @@ O navegador abrirá automaticamente em `http://localhost:8501`.
 ## Autora
 
 Sabrina Teixeira — estudante de Ciência da Computação na UFOP
+
 [LinkedIn](https://www.linkedin.com/in/sabrinateixeiradasilva)
