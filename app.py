@@ -17,6 +17,7 @@ Fluxo do app:
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import re
 from datetime import date
 
 import database as db
@@ -24,7 +25,7 @@ import analise
 import relatorio_pdf
 
 # ---------- Configuração inicial da página ----------
-st.set_page_config(page_title="Zyncash", layout="wide")
+st.set_page_config(page_title="Zyncash", page_icon="💰", layout="wide")
 
 # Garante que as tabelas do banco existem (só cria na primeira vez)
 db.criar_tabelas()
@@ -48,6 +49,23 @@ def formatar_real(valor: float) -> str:
     """Formata um número como moeda brasileira: 1234.5 -> 'R$ 1.234,50'."""
     texto = f"{valor:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
     return f"R$ {texto}"
+
+
+# Expressão simples e suficiente para o caso de uso: exige algo antes do @,
+# um domínio, um ponto, e a terminação (ex: nome@gmail.com).
+PADRAO_EMAIL = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
+
+SENHA_MINIMO_CARACTERES = 8
+
+
+def email_valido(email: str) -> bool:
+    """Verifica se o texto tem o formato básico de um e-mail (algo@algo.algo)."""
+    return bool(PADRAO_EMAIL.match(email.strip()))
+
+
+def senha_valida(senha: str) -> bool:
+    """Verifica se a senha atende ao tamanho mínimo exigido."""
+    return len(senha) >= SENHA_MINIMO_CARACTERES
 
 
 # ======================================================================
@@ -88,12 +106,19 @@ def tela_login():
             st.write("")
             st.subheader("Criar conta")
             nome = st.text_input("Nome", key="cad_nome")
-            email_novo = st.text_input("E-mail", key="cad_email")
-            senha_nova = st.text_input("Crie uma senha", type="password", key="cad_senha")
+            email_novo = st.text_input("E-mail", key="cad_email", placeholder="exemplo@gmail.com")
+            senha_nova = st.text_input(
+                "Crie uma senha", type="password", key="cad_senha",
+                help=f"Mínimo de {SENHA_MINIMO_CARACTERES} caracteres.",
+            )
 
             if st.button("Confirmar cadastro", use_container_width=True, type="primary"):
                 if not nome or not email_novo or not senha_nova:
                     st.warning("Preencha todos os campos.")
+                elif not email_valido(email_novo):
+                    st.warning("Digite um e-mail válido, por exemplo: seunome@gmail.com")
+                elif not senha_valida(senha_nova):
+                    st.warning(f"A senha precisa ter pelo menos {SENHA_MINIMO_CARACTERES} caracteres.")
                 else:
                     sucesso, mensagem = db.criar_usuario(nome, email_novo, senha_nova)
                     if sucesso:
@@ -486,7 +511,7 @@ def main():
         tela_login()
         return
 
-    st.sidebar.title(f"Olá, {st.session_state['usuario_nome']} ")
+    st.sidebar.title(f"Olá, {st.session_state['usuario_nome']} 👋")
     if st.sidebar.button("Sair"):
         st.session_state.clear()
         st.rerun()
