@@ -23,7 +23,7 @@ import database as db
 import analise
 import relatorio_pdf
 
-# ---------- Configuração inicial da página ----------
+# --------- CONFIGURAÇÃO DA PAGINA --------
 st.set_page_config(page_title="Zyncash", layout="wide")
 
 # Garante que as tabelas do banco existem (só cria na primeira vez)
@@ -35,7 +35,7 @@ CATEGORIAS_SUGERIDAS = [
     "Aluguel/Moradia", "Transporte", "Lazer", "Outros",
 ]
 
-# FUNÇÕES 
+#-------- FUNÇÕES ---------
 
 def usuario_logado() -> bool:
     return st.session_state.get("usuario_id") is not None
@@ -64,7 +64,7 @@ def senha_valida(senha: str) -> bool:
     return len(senha) >= SENHA_MINIMO_CARACTERES
 
 
-# TELA DE LOGIN 
+# ------ TELA DE LOGIN -------
 
 def tela_login():
     st.title("Zyncash")
@@ -125,7 +125,7 @@ def tela_login():
                 st.session_state["mostrar_cadastro"] = False
                 st.rerun()
 
-# CAMPO DE VALOR
+#--------- CAMPO DE VALOR -----------
 
 def _formatar_campo_valor(key_atual: str):
     """
@@ -186,9 +186,7 @@ def limpar_campo_valor(key_base: str):
     st.session_state[f"{key_base}_contador"] = contador_atual + 1
 
 
-# ======================================================================
-# Formulário de novo lançamento
-# ======================================================================
+# --------- FORMULARIO - NOVO LANÇAMENTO -----------
 
 def formulario_lancamento(usuario_id: int):
     st.subheader("Novo Lançamento")
@@ -225,11 +223,10 @@ def formulario_lancamento(usuario_id: int):
             st.rerun()
 
 
-# ======================================================================
-# Tabela de lançamentos (com bolinha colorida) + editar/excluir
-# ======================================================================
+# --------- Tabela de lançamentos (com bolinha colorida) + editar/excluir------------
 
-# Definição de todas as colunas possíveis na tabela, na ordem de exibição.
+# Definição de todas as colunas possíveis na tabela, na ordem de exibição. --------
+
 COLUNAS_TABELA = ["Tipo", "Data", "Descrição", "Categoria", "Valor", "Ações"]
 LARGURAS_COLUNAS = {
     "Tipo": 0.6, "Data": 1.2, "Descrição": 2.2,
@@ -397,10 +394,7 @@ def formulario_edicao(lancamento_id: int, usuario_id: int):
         st.session_state["editando_id"] = None
         st.rerun()
 
-
-# ======================================================================
-# Menu de opções (⋮): resumo, gráficos, PDFs e sugestões
-# ======================================================================
+# ----------- MENU OPÇÕES -------------
 
 def menu_opcoes(df: pd.DataFrame, usuario_id: int, usuario_nome: str):
     with st.popover("⋮", use_container_width=False):
@@ -489,16 +483,14 @@ def menu_opcoes(df: pd.DataFrame, usuario_id: int, usuario_nome: str):
                     st.warning("Escreva sua sugestão antes de enviar.")
 
 
-# ======================================================================
-# Aplicação principal
-# ======================================================================
+# ----------- APLICAÇÃO -----------
 
 def main():
     if not usuario_logado():
         tela_login()
         return
 
-    st.sidebar.title(f"Olá, {st.session_state['usuario_nome']} 👋")
+    st.sidebar.title(f"Olá, {st.session_state['usuario_nome']} ")
     if st.sidebar.button("Sair"):
         st.session_state.clear()
         st.rerun()
