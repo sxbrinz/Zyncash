@@ -1,6 +1,6 @@
 # Zyncash
 
-Aplicação web para controle financeiro diário, pensada para as pessoas que desejam saber de onde o seu dinheiro está saindo e para onde ele está indo. 
+Aplicação web para controle financeiro diário, desenvolvida para auxiliar qualquer pessoa a acompanhar, quanto entrou, quanto saiu e quanto restou ao final do dia, semana e mês.
 
 ## Tecnologias utilizadas
 
@@ -26,6 +26,9 @@ zyncash/
 ```
 
 A separação em módulos foi intencional: `database.py` cuida só de salvar/buscar dados, `analise.py` cuida só dos cálculos, `relatorio_pdf.py` cuida só da geração de PDF, e `app.py` cuida só da interface. Isso facilita testar e expandir cada parte sem afetar as outras.
+
+## Aplicação disponivel em: [zyncash.streamlit.app](https://zyncash.streamlit.app/)
+Não é necessário instalar nada para utilizá-la. Basta acessar o link acima em qualquer navegador, criar uma conta e começar a registrar os lançamentos.
 
 ## Como rodar localmente
 
