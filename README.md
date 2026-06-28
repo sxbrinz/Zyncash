@@ -1,19 +1,6 @@
-# 💰 Zyncash
+# Zyncash
 
-Aplicação web para controle financeiro diário, pensada para qualquer pessoa que precise saber, de forma simples, quanto entrou, quanto saiu e quanto sobrou no fim do dia — com uma interface pensada para ser acessível também a usuários menos familiarizados com tecnologia.
-
-## A ideia
-
-Quem trabalha por conta própria (motoboys, freelancers, autônomos em geral) costuma lidar com entradas e saídas de dinheiro o dia inteiro, mas raramente tem um controle claro de quanto realmente sobra no fim do dia, da semana ou do mês. O Zyncash resolve isso com:
-
-- Login simples e direto, com cadastro como ação secundária
-- Registro rápido de cada lançamento (entrada ou saída), com categoria e descrição
-- Campo de valor com máscara monetária automática (estilo caixa eletrônico)
-- Indicador visual discreto (🟢 entrada / 🔴 saída) em vez de linhas coloridas
-- Edição e exclusão de lançamentos já cadastrados
-- Resumo e gráficos com filtro por dia, semana, mês ou sem filtro, organizados em um menu de opções
-- Download de relatórios em PDF (tabela de lançamentos e gráficos, separadamente)
-- Caixa de sugestões para os usuários enviarem ideias de melhoria
+Aplicação web para controle financeiro diário, pensada para as pessoas que desejam saber de onde o seu dinheiro está saindo e para onde ele está indo. 
 
 ## Tecnologias utilizadas
 
@@ -60,14 +47,7 @@ streamlit run app.py
 
 O navegador abrirá automaticamente em `http://localhost:8501`.
 
-## Próximos passos (ideias de evolução)
-
-- [ ] Domínio próprio (zyncash.com)
-- [ ] Envio de sugestões também por e-mail
-- [ ] Categorias personalizadas por usuário
-- [ ] Alertas quando os gastos do mês superarem um limite definido pelo usuário
-
 ## Autora
 
-Sabrina Teixeira da Silva — estudante de Ciência da Computação na UFOP
+Sabrina Teixeira — estudante de Ciência da Computação na UFOP
 [LinkedIn](https://www.linkedin.com/in/sabrinateixeiradasilva)
