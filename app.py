@@ -148,7 +148,7 @@ def _formatar_campo_valor(key_atual: str):
 def campo_valor_monetario(label: str, key_base: str, valor_inicial_centavos: int = 0) -> tuple[float, str]:
     """
     Mostra um campo de valor que formata o que o usuário digita como dinheiro
-    (ex: digitar '1050' mostra 'R$ 10,50'), tudo dentro do mesmo campo de texto.
+    (ex: digitar '1050' mostra 'R$ 10,50').
 
     Para evitar o erro do Streamlit "valor não pode ser alterado após o widget
     já existir", este campo usa uma key dinâmica (contador, trocado sempre que o
@@ -265,7 +265,7 @@ def tabela_lancamentos(df: pd.DataFrame, usuario_id: int):
     st.subheader("Lançamentos")
 
     if df.empty:
-        st.info("Nenhum lançamento ainda. Use o formulário acima para começar.")
+        st.info("Nenhum lançamento ainda.")
         return
 
     colunas_visiveis = st.multiselect(
